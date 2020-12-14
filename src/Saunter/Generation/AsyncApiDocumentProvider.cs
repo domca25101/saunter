@@ -16,7 +16,7 @@ namespace Saunter.Generation
         public AsyncApiDocumentProvider(IOptions<AsyncApiOptions> options, IDocumentGenerator documentGenerator)
         {
             _documentGenerator = documentGenerator;
-            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+            _options = options.Value;
         }
         
         

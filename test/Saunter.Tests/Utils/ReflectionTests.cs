@@ -211,6 +211,7 @@ namespace Saunter.Tests.Utils
 
         [Theory]
         [InlineData(typeof(SomeEnum), new[] { 0, 1 })]
+        [InlineData(typeof(SomeEnum?), new[] { 0, 1 })]
         public void IsEnum_True_WhenTypeIsEnum(Type type, int[] members)
         {
             var options = new AsyncApiOptions();
@@ -451,6 +452,16 @@ namespace Saunter.Tests.Utils
         }
 
         [Fact]
+        public void GetMinItems_ReturnsNull_FromMinLengthAttribute()
+        {
+            var prop = typeof(SomeClass).GetProperty(nameof(SomeClass.PropertyWithNothing));
+            prop!.GetMinItems().ShouldBeNull();
+
+            var field = typeof(SomeClass).GetField(nameof(SomeClass.FieldWithNothing));
+            field!.GetMinItems().ShouldBeNull();
+        }
+
+        [Fact]
         public void GetMaxItems_ReturnsMaxItems_FromMaxLengthAttribute()
         {
             var prop = typeof(SomeClass).GetProperty(nameof(SomeClass.ArrayPropertyWithMinMaxLengthAttributes));
@@ -458,6 +469,16 @@ namespace Saunter.Tests.Utils
 
             var field = typeof(SomeClass).GetField(nameof(SomeClass.ArrayFieldWithMinMaxLengthAttributes));
             field!.GetMaxItems().ShouldBe(33);
+        }
+
+        [Fact]
+        public void GetMaxItems_ReturnsNull_FromMaxLengthAttribute()
+        {
+            var prop = typeof(SomeClass).GetProperty(nameof(SomeClass.PropertyWithNothing));
+            prop!.GetMaxItems().ShouldBeNull();
+
+            var field = typeof(SomeClass).GetField(nameof(SomeClass.FieldWithNothing));
+            field!.GetMaxItems().ShouldBeNull();
         }
 
         [Fact]
@@ -581,6 +602,23 @@ namespace Saunter.Tests.Utils
 
             var field = typeof(SomeClass).GetField(nameof(SomeClass.FieldWithNothing));
             field!.GetExample().ShouldBeNull();
+        }
+
+        [Fact]
+        public void GetUnderlyingType_UnderlyingType_WhenMemberTypeIsFieldOrProperty()
+        {
+            var prop = typeof(SomeClass).GetProperty(nameof(SomeClass.PropertyWithNothing));
+            Reflection.GetUnderlyingType(prop!).ShouldBe(prop.PropertyType);
+
+            var field = typeof(SomeClass).GetField(nameof(SomeClass.FieldWithNothing));
+            Reflection.GetUnderlyingType(field!).ShouldBe(field.FieldType);
+        }
+
+        [Fact]
+        public void GetUnderlyingType_Exception_WhenMemberTypeNotFieldOrProperty()
+        {
+            MemberInfo memberInfo = typeof(SomeClass).GetConstructors()[0];
+            Assert.Throws<ArgumentException>(() => Reflection.GetUnderlyingType(memberInfo));
         }
     }
 }
