@@ -56,7 +56,7 @@ namespace Saunter.Tests.Generation.SchemaGeneration
             schema.ShouldNotBeNull();
             _schemaRepository.Schemas.ShouldNotBeNull();
             _schemaRepository.Schemas.ContainsKey("book").ShouldBeTrue();
-            _schemaRepository.Schemas["book"].Properties!.Count.ShouldBe(4);
+            _schemaRepository.Schemas["book"].Properties!.Count.ShouldBe(7);
             _schemaRepository.Schemas.ContainsKey("foo").ShouldBeTrue();
             _schemaRepository.Schemas["foo"].Required!.Count.ShouldBe(1);
             _schemaRepository.Schemas["foo"].Required!.Contains("id").ShouldBeTrue();
@@ -110,6 +110,12 @@ namespace Saunter.Tests.Generation.SchemaGeneration
         public readonly int NumberOfPages;
 
         public readonly Foo Foo;
+
+        public readonly bool Used;
+
+        public readonly DateTime AcquiredDate;
+
+        public readonly TimeSpan? ReadTime;
 
         public Book(string name, string author, int numberOfPages, Foo foo)
         {
